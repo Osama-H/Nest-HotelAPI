@@ -1,8 +1,7 @@
 # Hotel Booking API
 
-![Project Logo or Banner](https://dribbble.com/shots/2564555/attachments/2564555-Hotel-Popup?mode=media)
+![Project Logo or Banner](https://cdn.dribbble.com/users/337606/screenshots/2564555/hoteeel_dribb.gif)
 
-[![Badge1](url_to_badge)](link) [![Badge2](url_to_badge)](link)
 
 ## Table of Contents
 
