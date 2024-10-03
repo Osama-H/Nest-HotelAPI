@@ -108,7 +108,7 @@ Follow these steps to set up and run the project locally.
 ### 1. Clone the Repository
 
 Begin by cloning the repository to your local machine:
-git clone https://github.com/yourusername/yourproject.git
+git clone https://github.com/Osama-H/Nest-HotelAPI
 
 ### 2. Install Dependencies
 
