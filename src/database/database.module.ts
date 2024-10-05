@@ -20,6 +20,7 @@ import { Amenity } from 'src/amenity/amenity.model';
 import { HotelAmenity } from 'src/hotel-amenity/hotel-amenity.mode';
 import { TicketStatus } from 'src/ticket-status/ticketStatus.model';
 import { Coupon } from 'src/coupon/coupon.model';
+import { HotelPhoto } from 'src/hotel-photo/hotel-photo.model';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { Coupon } from 'src/coupon/coupon.model';
       ContactInfo,
       RoomType,
       Coupon,
+      HotelPhoto
     ]),
     SequelizeModule.forRoot({
       ...databaseConfig[process.env.NODE_ENV || 'development'],
@@ -66,6 +68,7 @@ import { Coupon } from 'src/coupon/coupon.model';
         HotelAmenity,
         TicketStatus,
         Coupon,
+        HotelPhoto
       ],
     }),
   ],

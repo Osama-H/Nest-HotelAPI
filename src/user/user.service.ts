@@ -12,12 +12,15 @@ import { Booking } from 'src/booking/booking.model';
 import { SupportTicket } from 'src/support-ticket/supportTicket.model';
 import { TicketResult } from 'src/ticket-result/ticket-result.model';
 import { UpdateMeDto } from './dtos/update-me-dto';
+import { UploadService } from 'src/upload/upload.service';
+import { retry } from 'rxjs';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectModel(User) private readonly userModel: typeof User,
     private readonly sequelize: Sequelize,
+    private readonly uploadService: UploadService,
     private readonly cloudinaryService: CloudinaryService,
   ) {}
 
@@ -59,6 +62,7 @@ export class UserService {
           password,
           role: 'user',
           isVerified: false,
+          photoUrl: 'defaultOne',
           verificationCode,
           verificationCodeExpires,
           roleId: 2,
@@ -67,21 +71,21 @@ export class UserService {
           transaction,
         },
       );
-      if (photo) {
-        console.log(photo);
-        const uploadResult = await this.cloudinaryService.uploadFile(photo);
-        await this.userModel.update(
-          {
-            photoUrl: uploadResult.secure_url,
-          },
-          {
-            where: {
-              email,
-            },
-            transaction,
-          },
-        );
-      }
+      // if (photo) {
+      //   console.log(photo);
+      //   const uploadResult = await this.cloudinaryService.uploadFile(photo);
+      //   await this.userModel.update(
+      //     {
+      //       photoUrl: uploadResult.secure_url,
+      //     },
+      //     {
+      //       where: {
+      //         email,
+      //       },
+      //       transaction,
+      //     },
+      //   );
+      // }
       return newUser;
     });
   }
@@ -184,16 +188,59 @@ export class UserService {
         },
       ],
     });
+
+    let photoUrl = user.photoUrl;
+    if (photoUrl) {
+      photoUrl = await this.uploadService.getSignedUrl(photoUrl, 'user');
+    }
+
     return user;
   }
 
-  async updateOne(id: number, updateMeDto: UpdateMeDto, photo: any) {
-    let uploadResult;
+  async getMe(id: number) {
+    const user = await User.findByPk(id, {
+      attributes: ['id', 'username', 'email', 'photoUrl'],
+      include: [
+        {
+          model: Role,
+          as: 'role',
+          attributes: ['name'],
+        },
+        {
+          model: Booking,
+        },
+        {
+          model: SupportTicket,
+          include: [
+            {
+              model: TicketResult,
+              attributes: ['id', 'description', 'adminId', 'createdAt'],
+            },
+          ],
+        },
+      ],
+    });
 
-    if (photo) {
-      uploadResult = await this.cloudinaryService.uploadFile(photo);
-      updateMeDto.photoUrl = uploadResult.secure_url;
+    let photoUrl = user.photoUrl;
+    if (photoUrl) {
+      photoUrl = await this.uploadService.getSignedUrl(photoUrl, 'user');
+    } else {
+      photoUrl = await this.uploadService.getSignedUrl('defaultOne', 'user');
     }
+
+    return { user, photoUrl };
+  }
+
+  async updateOne(id: number, updateMeDto: UpdateMeDto, file: any) {
+    let uploadResult;
+    // console.log(file);
+
+    if (file) {
+      const fileName = `user-${id}-${Date.now()}`;
+      await this.uploadService.upload(fileName, file.buffer, 'user');
+      updateMeDto.photoUrl = fileName;
+    }
+    console.log(updateMeDto);
 
     const user = await this.userModel.findByPk(id);
     if (!user) {
@@ -202,5 +249,20 @@ export class UserService {
 
     await user.update(updateMeDto);
     return user;
+  }
+
+  async deletePhoto(id: number) {
+    const user = await this.userModel.findByPk(id);
+
+    if (!user) {
+      throw new NotFoundException('User_Not_Found');
+    }
+
+    await user.update({ photoUrl: 'defaultOne' });
+
+    return {
+      message: 'Photo has been deleted and reverted to the default photo',
+      user,
+    };
   }
 }

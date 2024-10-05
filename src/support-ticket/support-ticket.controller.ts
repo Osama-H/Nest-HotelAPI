@@ -95,7 +95,6 @@ export class SupportTicketController {
   ) {
     const isAdmin = role.includes('admin');
 
-    console.log('isAdmin', isAdmin);
     return await this.supportTicketService.delete(id, userId, isAdmin);
   }
 }

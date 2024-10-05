@@ -13,6 +13,7 @@ import { haversineDistance } from '../utils/distance';
 import { Amenity } from 'src/amenity/amenity.model';
 import { AmenityService } from 'src/amenity/amenity.service';
 import { Review } from 'src/review/review.model';
+import { HotelPhotoService } from 'src/hotel-photo/hotel-photo.service';
 
 @Injectable()
 export class HotelService {
@@ -21,6 +22,7 @@ export class HotelService {
     @InjectModel(ContactInfo)
     private readonly contactInfoModel: typeof ContactInfo,
     private readonly amenityService: AmenityService,
+    private readonly hotelPhotoService: HotelPhotoService,
     private readonly sequelize: Sequelize,
   ) {}
 
@@ -178,7 +180,18 @@ export class HotelService {
     }
     const numOfRooms = foundHotel.getRoomCount();
 
-    return { foundHotel, avgReviews, numOfRooms };
+    const primaryPhoto = await this.hotelPhotoService.getPrimaryPhoto(
+      foundHotel.id,
+    );
+    const allPhotos = await this.hotelPhotoService.getAllPhotos(foundHotel.id);
+
+    return {
+      ...foundHotel.toJSON(),
+      avgReviews,
+      numOfRooms,
+      primaryPhoto,
+      allPhotos,
+    };
   }
   async findByName(name: string) {
     const foundHotel = await this.hotelModel.findOne({

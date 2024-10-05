@@ -17,6 +17,7 @@ import { TicketSubject } from 'src/ticket-subject/ticketSubject.model';
 import { Booking } from 'src/booking/booking.model';
 import { Role } from 'src/role/role.model';
 import { HotelAmenity } from 'src/hotel-amenity/hotel-amenity.mode';
+import { HotelPhoto } from 'src/hotel-photo/hotel-photo.model';
 // import { User } from '../../modules/users/user.entity';
 // import { Post } from '../../modules/posts/post.entity';
 
@@ -55,6 +56,7 @@ export const databaseProviders = [
         Booking,
         Role,
         HotelAmenity,
+        HotelPhoto
       ]);
       await sequelize.sync();
       return sequelize;

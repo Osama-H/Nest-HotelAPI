@@ -6,12 +6,13 @@ import { CustomCacheModule } from 'src/cache/cache.module';
 import { CloudinaryModule } from 'src/cloudinary/cloudinary.module';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UploadModule } from 'src/upload/upload.module';
 // import { CacheModule } from '@nestjs/cache-manager';
 
 @Module({
   imports: [
     SequelizeModule.forFeature([User]),
-
+    UploadModule,
     CustomCacheModule,
     CloudinaryModule,
   ],

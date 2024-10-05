@@ -12,6 +12,7 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { CustomCacheModule } from 'src/cache/cache.module';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
+import { UploadModule } from 'src/upload/upload.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { CloudinaryProvider } from 'src/cloudinary/cloudinary.provider';
       signOptions: { expiresIn: '10h' },
     }),
     SequelizeModule.forFeature([User]),
+    UploadModule,
   ],
   providers: [
     AuthService,

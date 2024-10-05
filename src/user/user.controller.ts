@@ -1,7 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
+  FileTypeValidator,
   Get,
+  MaxFileSizeValidator,
+  ParseFilePipe,
   Patch,
   Query,
   UploadedFile,
@@ -27,7 +31,7 @@ export class UserController {
   @UseGuards(AuthGuard)
   @Get('my-profile')
   async getMyProfile(@getCurrentUserId() userId: number) {
-    return await this.userService.findOne(userId);
+    return await this.userService.getMe(userId);
   }
 
   @UseGuards(AuthGuard)
@@ -36,8 +40,24 @@ export class UserController {
   async updateMe(
     @getCurrentUserId() userId: number,
     @Body() updateMeDto: UpdateMeDto,
-    @UploadedFile() file: Express.Multer.File,
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          // new MaxFileSizeValidator({ maxSize: 1000 }),
+          new FileTypeValidator({
+            fileType: /(image\/jpeg|image\/jpg|image\/png)$/i,
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
   ) {
     return await this.userService.updateOne(userId, updateMeDto, file);
+  }
+
+  @UseGuards(AuthGuard)
+  @Delete('me/photo')
+  async deletePhoto(@getCurrentUserId() id: number) {
+    return this.userService.deletePhoto(id);
   }
 }

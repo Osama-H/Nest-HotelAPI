@@ -31,6 +31,8 @@ import { CloudinaryModule } from './cloudinary/cloudinary.module';
 import { TicketStatusModule } from './ticket-status/ticket-status.module';
 import { EmailController } from './email/email.controller';
 import { EmailModule } from './email/email.module';
+import { UploadModule } from './upload/upload.module';
+import { HotelPhotoModule } from './hotel-photo/hotel-photo.module';
 
 @Module({
   imports: [
@@ -61,6 +63,8 @@ import { EmailModule } from './email/email.module';
     CouponModule,
     TicketStatusModule,
     EmailModule,
+    UploadModule,
+    HotelPhotoModule,
   ],
   controllers: [AppController, UserController, EmailController],
   providers: [

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { HotelService } from './hotel.service';
 import { HotelController } from './hotel.controller';
@@ -7,6 +7,7 @@ import { UserModule } from 'src/user/user.module';
 import { AuthModule } from 'src/auth/auth.module';
 import { ContactInfo } from './models/contactInfo.model';
 import { AmenityModule } from 'src/amenity/amenity.module';
+import { HotelPhotoModule } from 'src/hotel-photo/hotel-photo.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AmenityModule } from 'src/amenity/amenity.module';
     AuthModule,
     UserModule,
     AmenityModule,
+    HotelPhotoModule,
   ],
   providers: [HotelService],
   controllers: [HotelController],
